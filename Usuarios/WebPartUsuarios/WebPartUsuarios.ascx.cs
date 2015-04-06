@@ -52,7 +52,26 @@ namespace Usuarios.WebPartUsuarios
 
         protected void btnOutPerm_Click(object sender, EventArgs e)
         {
+            using (SPWeb web = SPContext.Current.Web)
+            {
+                SPList list=web.Lists["TrabajosPendientes"];
 
+                if (list != null)
+                {
+                    list.BreakRoleInheritance(true);
+                
+                    SPRoleAssignment roleAssignment=new SPRoleAssignment(@"SPCURSOVM\alumno","","","");
+
+                    roleAssignment.RoleDefinitionBindings.RemoveAll();
+                    roleAssignment.RoleDefinitionBindings.Add(web.RoleDefinitions["read"]);
+                    list.RoleAssignments.Add(roleAssignment);
+
+                    list.Update();
+
+
+                }
+
+            }
         }
     }
 }
